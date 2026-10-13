@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Наталья Кукурузина</title>
+<style>
+  :root {
+    --bg: #faf6f1;
+    --card-bg: #ffffff;
+    --text: #2a241f;
+    --text-muted: #6b6058;
+    --accent: #b5553e;
+    --accent-dark: #8c3f2d;
+    --accent-tint: #f4e3dc;
+    --line: #e8ddd1;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Georgia", "Iowan Old Style", "Palatino Linotype", serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+
+  p { margin: 0 0 1em 0; }
+
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    min-height: 78vh;
+    display: flex;
+    align-items: flex-end;
+    background-image:
+      linear-gradient(180deg, rgba(20,14,10,0.1) 0%, rgba(20,14,10,0.3) 50%, rgba(20,14,10,0.85) 100%),
+      url("images/DSC_9864.jpg");
+    background-size: cover;
+    background-position: center 20%;
+    color: #fff;
+  }
+
+  .hero-inner {
+    padding: 48px 24px 56px;
+    max-width: 920px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.78rem;
+    color: #f0c9b8;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    margin-bottom: 10px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 7vw, 4.2rem);
+    line-height: 1.05;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.45);
+  }
+
+  .hero .subtitle {
+    margin-top: 12px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(1rem, 2.4vw, 1.25rem);
+    color: #f3e9e2;
+    max-width: 560px;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section {
+    padding: 72px 0;
+  }
+
+  section + section {
+    border-top: 1px solid var(--line);
+  }
+
+  .section-title {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .section-title .accent-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  .lede {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 640px;
+    margin-bottom: 36px;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 44px;
+    align-items: start;
+  }
+
+  .about-photo {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: center 45%;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(60,30,15,0.15);
+  }
+
+  /* ---------- FACTS ---------- */
+  .fact-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .fact-chip {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 11px 20px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.92rem;
+    color: var(--text);
+    box-shadow: 0 2px 10px rgba(60,30,15,0.04);
+  }
+
+  .fact-chip strong { color: var(--accent-dark); }
+
+  /* ---------- CAREER AS PROJECTS ---------- */
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .project-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px 24px;
+    box-shadow: 0 4px 18px rgba(60,30,15,0.05);
+  }
+
+  .project-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+    color: var(--accent-dark);
+  }
+
+  .project-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 0;
+  }
+
+  .career-resources {
+    margin-top: 28px;
+    padding: 22px 24px;
+    border: 1px dashed #d9b9a8;
+    border-radius: 12px;
+    background: #fff8f4;
+  }
+
+  .career-resources h3 {
+    font-size: 1rem;
+    color: var(--accent-dark);
+    margin-bottom: 8px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .career-resources p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  /* ---------- EDUCATION ---------- */
+  .edu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .edu-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px 22px;
+    box-shadow: 0 4px 18px rgba(60,30,15,0.05);
+  }
+
+  .edu-card .degree {
+    display: inline-block;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    background: var(--accent-tint);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+
+  .edu-card h3 {
+    font-size: 1rem;
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+
+  .edu-card .field {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .edu-card .years {
+    font-size: 0.78rem;
+    color: var(--accent-dark);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+
+  /* ---------- TESTIMONIALS ---------- */
+  .quote-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .quote-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px 24px;
+    box-shadow: 0 4px 18px rgba(60,30,15,0.05);
+  }
+
+  .quote-card .mark {
+    font-family: Georgia, serif;
+    font-size: 2.4rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .quote-card p {
+    font-style: italic;
+    color: var(--text);
+    font-size: 0.97rem;
+    margin-bottom: 14px;
+  }
+
+  .quote-card .author {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .quote-card .role {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* ---------- LIFE COLLAGE ---------- */
+  .collage {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .collage img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+  }
+
+  /* ---------- FINALE ---------- */
+  .finale {
+    position: relative;
+    min-height: 58vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-image:
+      linear-gradient(180deg, rgba(20,14,10,0.6) 0%, rgba(20,14,10,0.6) 100%),
+      url("images/IMG_3152.JPG");
+    background-size: cover;
+    background-position: center 75%;
+    color: #fff;
+    padding: 60px 24px;
+  }
+
+  .finale-inner {
+    max-width: 640px;
+  }
+
+  .finale blockquote {
+    margin: 0;
+    font-size: clamp(1.15rem, 3vw, 1.5rem);
+    font-style: italic;
+    color: #fff;
+    text-shadow: 0 2px 14px rgba(0,0,0,0.5);
+  }
+
+  .finale cite {
+    display: block;
+    margin-top: 18px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-style: normal;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: #f0c9b8;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    padding: 24px 24px 36px;
+    text-align: center;
+  }
+
+  footer p {
+    margin: 0;
+    font-size: 0.75rem;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #b0a89d;
+  }
+
+  /* ---------- PRINT / PDF ---------- */
+  @media print {
+    section, header.hero, .finale {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .about-grid, .about-photo, .project-card, .edu-card, .quote-card,
+    .collage, .collage img, .fact-chip, .timeline-h, .t-item {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .project-grid, .edu-grid, .quote-grid {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 720px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .about-photo { aspect-ratio: 4/3; }
+    .edu-grid { grid-template-columns: 1fr; }
+    .quote-grid { grid-template-columns: 1fr; }
+    .project-grid { grid-template-columns: 1fr; }
+    section { padding: 52px 0; }
+    .hero { min-height: 64vh; }
+
+    .collage { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Персона</div>
+      <h1>Наталья Кукурузина</h1>
+      <p class="subtitle">Лидер и стратег, для которой главный проект в жизни — семья.</p>
+    </div>
+  </header>
+
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title"><span class="accent-dot"></span>Про меня</h2>
+
+      <div class="about-grid">
+        <div>
+          <p>Моя самая важная команда — дома. Два сына, 16 и 13 лет, и дочка-лапочка — обожаю свою семью и считаю её своим главным проектом в жизни. Мы много путешествуем вместе и всегда в поиске новых впечатлений, а не просто галочек на карте.</p>
+
+          <p>В остальное время — спортзал и велосипед: люблю, когда тело двигается не меньше, чем голова на работе. А если выбирать между музеем и диваном — всегда выберу музей: искусство, театры, ретроавтомобили — то, что заряжает иначе, чем рабочие таблицы.</p>
+
+          <p>Дома у нас настоящий живой уголок: любимая всеми собака, которая умудряется перехитрить нас всех, муравьиная колония, когда-то жили тараканы и хамелеон, менявший цвет прямо на глазах. В общем, в нашем доме вечно что-то цветёт, ползает или требует прогулки.</p>
+        </div>
+        <img class="about-photo" src="images/IMG_2922.jpg" alt="Наталья с семьёй" style="object-position: center 40%;">
+      </div>
+    </div>
+  </section>
+
+  <section id="facts">
+    <div class="container">
+      <h2 class="section-title"><span class="accent-dot"></span>Факты обо мне</h2>
+
+      <div class="fact-chips">
+        <span class="fact-chip"><strong>Кофе</strong> — обязательная часть утра, без вариантов</span>
+        <span class="fact-chip">Из <strong>бизнес-аналитика</strong> доросла до CEO трёх компаний</span>
+        <span class="fact-chip">На <strong>велосипеде</strong> — летом, по делу и для души</span>
+        <span class="fact-chip">Люблю <strong>знакомиться с новыми людьми</strong> — чем неожиданнее встреча, тем лучше</span>
+        <span class="fact-chip">Неровно дышу к <strong>ретроавтомобилям</strong>, особенно ярко-красным</span>
+        <span class="fact-chip"><strong>MBA</strong> получила просто потому, что было интересно</span>
+        <span class="fact-chip">Музей выигрывает у дивана <strong>всегда</strong></span>
+        <span class="fact-chip">Главный проект жизни — <strong>семья</strong>: муж, два сына и дочка</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="career">
+    <div class="container">
+      <h2 class="section-title"><span class="accent-dot"></span>Карьерный путь</h2>
+      <p class="lede">Пятнадцать с лишним лет и шесть компаний — но суть не меняется: превращать стратегию в результат, а команду — в тех, кто доводит дело до конца.</p>
+
+      <div class="project-grid">
+        <div class="project-card">
+          <h3>Стратегия роста</h3>
+          <p>Строю стратегию роста там, где нужно быстро найти рабочую модель: от привлечения пользователей до оптимизации воронки конверсии. Head of Growth в HYPERVSN, Head of E‑commerce Strategy and Growth в Amasty.</p>
+        </div>
+        <div class="project-card">
+          <h3>Управление и P&amp;L</h3>
+          <p>Руковожу компанией целиком — от найма до финансового результата. CEO в ITlect, CIB Software и aheadWorks: три компании, один подход — дисциплина и забота о команде одновременно.</p>
+        </div>
+        <div class="project-card">
+          <h3>Маркетинг и позиционирование</h3>
+          <p>Строю бренд и рыночную стратегию: от первых шагов в Oxagile до нынешней роли CMO в RocketData, где отвечаю за то, чтобы бизнес был там, где его ищут клиенты.</p>
+        </div>
+        <div class="project-card">
+          <h3>Продукт и данные</h3>
+          <p>Работаю на стыке продукта и данных: как Product Owner в HYPERVSN запускала 3D-голографическую платформу, сейчас в RocketData управляю данными и отзывами более чем в 30 картографических и репутационных сервисах.</p>
+        </div>
+      </div>
+
+      <div class="career-resources">
+        <h3>С чем работаю</h3>
+        <p>MBA, 15+ лет в e-commerce и SaaS, опыт CEO, CMO и Head of Growth, команды от 5 до 50+ человек, рынки от Беларуси до США. Но главный ресурс — умение быстро разобраться в новой индустрии и выстроить в ней рабочую стратегию.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="container">
+      <h2 class="section-title"><span class="accent-dot"></span>Образование</h2>
+
+      <div class="edu-grid">
+        <div class="edu-card">
+          <span class="degree">MBA</span>
+          <h3>Белорусский государственный университет</h3>
+          <div class="field">Business Administration and Management</div>
+          <div class="years">2012 — 2014</div>
+        </div>
+        <div class="edu-card">
+          <span class="degree">Магистратура</span>
+          <h3>БГУ информатики и радиоэлектроники</h3>
+          <div class="field">Информационные технологии и управление</div>
+          <div class="years">БГУИР</div>
+        </div>
+        <div class="edu-card">
+          <span class="degree">Диплом</span>
+          <h3>Минский государственный лингвистический университет</h3>
+          <div class="field">Английский язык</div>
+          <div class="years">2007 — 2008</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <div class="container">
+      <h2 class="section-title"><span class="accent-dot"></span>Что говорят коллеги</h2>
+      <p class="lede">Несколько строк из рекомендаций, которые накопились за годы совместной работы.</p>
+
+      <div class="quote-grid">
+        <div class="quote-card">
+          <span class="mark">&ldquo;</span>
+          <p>Natallia is one of the most delightful people I had the pleasure of working for in my career. Her humor and empathy fostered a comforting work environment.</p>
+          <div class="author">Drew Shumski</div>
+          <div class="role">Software Architect, подчинялся Наталье напрямую</div>
+        </div>
+        <div class="quote-card">
+          <span class="mark">&ldquo;</span>
+          <p>Under Natalia's leadership aheadWorks became one of the best Magento partners. Natalia's business and people skills made her an ideal leader or business partner.</p>
+          <div class="author">Victor Chuntu</div>
+          <div class="role">Staff Technical Program Manager, Realtor.com</div>
+        </div>
+        <div class="quote-card">
+          <span class="mark">&ldquo;</span>
+          <p>Natallia has not only sharp strategic vision, but also patience, dedication and close attention to details. I am sure that she will go far in life.</p>
+          <div class="author">Arvid Vismont</div>
+          <div class="role">Entrepreneur and Startups advisor, подчинялся Наталье напрямую</div>
+        </div>
+        <div class="quote-card">
+          <span class="mark">&ldquo;</span>
+          <p>She ran it with structure and discipline that I would expect from a seasoned executive.</p>
+          <div class="author">Ravi Mittal</div>
+          <div class="role">President, Rave Digital · CEO, Aheadworks</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="life">
+    <div class="container">
+      <h2 class="section-title"><span class="accent-dot"></span>Жизнь вне работы</h2>
+      <p class="lede">Семья, путешествия, велосипед, ретроавтомобили и один очень хитрый пёс.</p>
+
+      <div class="collage">
+        <img src="images/IMG_6333.jpg" alt="С сыновьями у горы Фудзи" style="object-position: center 25%;">
+        <img src="images/IMG_0654.jpg" alt="В музее всей семьёй">
+        <img src="images/IMG_2294.JPG" alt="Велопрогулка у озера" style="object-position: center 20%;">
+        <img src="images/IMG_3994.jpg" alt="На выставке ретроавтомобилей">
+        <img src="images/DSC_9719.jpg" alt="Наш пёс" style="object-position: center 25%;">
+        <img src="images/IMG_2089.JPG" alt="С дочкой на Рождество" style="object-position: center 15%;">
+      </div>
+    </div>
+  </section>
+
+  <section class="finale" style="border-top: none; padding: 0;">
+    <div class="finale-inner">
+      <blockquote>
+        «Сильный бизнес строят цифры и стратегия. Крепкую жизнь — семья, которая рядом, что бы ни происходило».
+        <cite>— Наталья Кукурузина</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <footer>
+    <p>Persona · собрано с любовью</p>
+  </footer>
+
+</body>
+</html>
