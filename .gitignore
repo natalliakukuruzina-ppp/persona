@@ -1,7 +1,11 @@
-videos/
+videos/*
 *.mp4
 *.mov
 *.pdf
+# Live Photos, подключённые в index.html
+!videos/IMG_2922.mov
+!videos/IMG_2294.MP4
+!videos/IMG_3152.MP4
 CLAUDE.md
 profile.md
 про-меня.md

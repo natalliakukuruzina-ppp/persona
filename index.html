@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Наталья Кукурузина</title>
+<script>document.documentElement.classList.add('js');</script>
 <style>
   :root {
     --bg: #faf6f1;
@@ -50,19 +51,79 @@
     min-height: 78vh;
     display: flex;
     align-items: flex-end;
-    background-image:
-      linear-gradient(180deg, rgba(20,14,10,0.1) 0%, rgba(20,14,10,0.3) 50%, rgba(20,14,10,0.85) 100%),
-      url("images/DSC_9864.jpg");
-    background-size: cover;
-    background-position: center 20%;
+    overflow: hidden;
+    background: #1a120d;
     color: #fff;
   }
 
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: url("images/DSC_9864.jpg") center 20% / cover no-repeat;
+    will-change: transform;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(20,14,10,0.1) 0%, rgba(20,14,10,0.3) 50%, rgba(20,14,10,0.85) 100%);
+    pointer-events: none;
+  }
+
   .hero-inner {
+    position: relative;
+    z-index: 1;
     padding: 48px 24px 56px;
     max-width: 920px;
     margin: 0 auto;
     width: 100%;
+  }
+
+  .hero h1 .word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .hero h1 .char {
+    display: inline-block;
+  }
+
+  /* Анимации включаются только при наличии JS (класс .js на <html>) */
+  .js .hero-bg {
+    animation: kenBurns 14s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+  }
+
+  .js .hero h1:not(.split) { opacity: 0; }
+
+  .js .hero h1 .char {
+    animation: charIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(300ms + var(--i) * 45ms);
+  }
+
+  .js .hero .eyebrow {
+    animation: fadeUp 1s ease both;
+    animation-delay: 100ms;
+  }
+
+  .js .hero .subtitle {
+    animation: fadeUp 1s ease both;
+    animation-delay: 1.2s;
+  }
+
+  @keyframes kenBurns {
+    from { scale: 1.12; }
+    to   { scale: 1; }
+  }
+
+  @keyframes charIn {
+    from { opacity: 0; transform: translateY(0.4em); filter: blur(8px); }
+    to   { opacity: 1; transform: none; filter: blur(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
   }
 
   .eyebrow {
@@ -157,12 +218,47 @@
     color: #fff;
   }
 
+  /* Скользящая «таблетка» под активной вкладкой */
+  .tab-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 999px;
+    background: var(--accent);
+    pointer-events: none;
+  }
+
+  .tab-indicator.ready {
+    transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1), width 0.4s cubic-bezier(0.65, 0, 0.35, 1), height 0.4s;
+  }
+
+  .js .tab-btn {
+    position: relative;
+    background: transparent;
+  }
+
+  .js .tab-btn.active {
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.2s 0.15s, border-color 0.2s;
+  }
+
   .tab-panel {
     display: none;
   }
 
   .tab-panel.active {
     display: block;
+  }
+
+  .js .tab-panel.active {
+    animation: fadeUp 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .js .tab-panel.active :is(.fact-cards, .project-grid, .edu-grid, .quote-grid, .collage) > * {
+    /* backwards, а не both: после появления transform свободен (нужно для 3D-наклона карточек) */
+    animation: fadeUp 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    animation-delay: calc(120ms + var(--i, 0) * 70ms);
   }
 
   /* ---------- ABOUT ---------- */
@@ -174,6 +270,7 @@
   }
 
   .about-photo {
+    display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
@@ -182,25 +279,149 @@
     box-shadow: 0 10px 30px rgba(60,30,15,0.15);
   }
 
-  /* ---------- FACTS ---------- */
-  .fact-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+  /* ---------- LIVE PHOTOS ---------- */
+  .live-photo {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
   }
 
-  .fact-chip {
+  .about-live {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(60,30,15,0.15);
+  }
+
+  .collage .live-photo {
+    border-radius: 12px;
+  }
+
+  .live-photo video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  .live-photo.playing video { opacity: 1; }
+
+  .live-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px 3px 6px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text);
+    pointer-events: none;
+  }
+
+  .live-badge svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .live-photo.playing .live-badge svg {
+    animation: livePulse 1s ease-in-out infinite;
+  }
+
+  @keyframes livePulse {
+    50% { transform: scale(1.18); }
+  }
+
+  /* ---------- FACTS ---------- */
+  .fact-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .fact-card {
+    perspective: 900px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* Обе стороны лежат в одной ячейке грида — высота подстраивается под более длинную */
+  .fact-inner {
+    display: grid;
+    min-height: 160px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  }
+
+  .fact-front,
+  .fact-back {
+    grid-area: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 16px;
+    border-radius: 14px;
+    text-align: center;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .fact-front {
+    position: relative;
+    background: var(--accent);
+    color: #fff;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.3;
+    box-shadow: 0 6px 20px rgba(140,63,45,0.22);
+  }
+
+  .fact-front::after {
+    content: "↻";
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    font-size: 0.95rem;
+    font-weight: 400;
+    opacity: 0.7;
+  }
+
+  .fact-back {
     background: var(--card-bg);
     border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 11px 20px;
-    font-family: "Helvetica Neue", Arial, sans-serif;
-    font-size: 0.92rem;
     color: var(--text);
-    box-shadow: 0 2px 10px rgba(60,30,15,0.04);
+    font-size: 0.92rem;
+    line-height: 1.45;
+    box-shadow: 0 4px 18px rgba(60,30,15,0.06);
+    transform: rotateY(180deg);
   }
 
-  .fact-chip strong { color: var(--accent-dark); }
+  .fact-back strong { color: var(--accent-dark); }
+
+  @media (hover: hover) {
+    .fact-card:hover .fact-inner { transform: rotateY(180deg); }
+  }
+
+  .fact-card:focus-visible .fact-inner,
+  .fact-card.flipped .fact-inner {
+    transform: rotateY(180deg);
+  }
+
+  .fact-card:focus-visible .fact-back {
+    border-color: var(--accent);
+  }
 
   /* ---------- CAREER AS PROJECTS ---------- */
   .project-grid {
@@ -210,11 +431,43 @@
   }
 
   .project-card {
+    position: relative;
+    overflow: hidden;
     background: var(--card-bg);
     border: 1px solid var(--line);
     border-radius: 14px;
     padding: 26px 24px;
     box-shadow: 0 4px 18px rgba(60,30,15,0.05);
+    transform: perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.5s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* Тёплый блик там, где курсор (координаты ставит JS) */
+  .project-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(181,85,62,0.16), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .project-card > * { position: relative; }
+
+  .project-card.tilting {
+    transition: transform 0.1s linear, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  @media (hover: hover) {
+    .project-card:hover {
+      border-color: #e2c6b8;
+      box-shadow: 0 14px 34px rgba(60,30,15,0.12);
+    }
+
+    .project-card:hover::before { opacity: 1; }
+
+    .project-card:hover .project-icon { transform: scale(1.1); }
   }
 
   .project-card h3 {
@@ -249,6 +502,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.3s ease;
   }
 
   .project-icon svg {
@@ -273,6 +527,32 @@
 
   .career-resources p {
     margin: 0;
+    color: var(--text-muted);
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 10px 0 18px;
+  }
+
+  .stat-num {
+    display: block;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    line-height: 1.1;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label {
+    display: block;
+    margin-top: 4px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.82rem;
+    line-height: 1.35;
     color: var(--text-muted);
   }
 
@@ -367,6 +647,66 @@
     color: var(--text-muted);
   }
 
+  /* Оригинал и перевод лежат в одной ячейке грида — высота карточки не прыгает */
+  .quote-text {
+    display: grid;
+    margin-bottom: 14px;
+  }
+
+  .quote-text p {
+    grid-area: 1 / 1;
+    margin: 0;
+    transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+
+  .q-ru,
+  #testimonials.lang-ru .q-en {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(6px);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  #testimonials.lang-ru .q-ru {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    pointer-events: auto;
+    user-select: auto;
+  }
+
+  .lang-switch {
+    position: relative;
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    margin: -14px 0 30px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card-bg);
+  }
+
+  html:not(.js) .lang-switch { display: none; }
+
+  .lang-btn {
+    position: relative;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: color 0.2s 0.1s;
+  }
+
+  .lang-btn:not(.active):hover { color: var(--accent-dark); }
+
+  .lang-btn.active { color: #fff; }
+
   /* ---------- LIFE COLLAGE ---------- */
   .collage {
     display: grid;
@@ -390,18 +730,80 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background-image:
-      linear-gradient(180deg, rgba(20,14,10,0.6) 0%, rgba(20,14,10,0.6) 100%),
-      url("images/IMG_3152.JPG");
-    background-size: cover;
-    background-position: center 75%;
+    overflow: hidden;
+    background: #1a120d;
     color: #fff;
     padding: 60px 24px;
   }
 
+  .finale-bg {
+    position: absolute;
+    inset: 0;
+  }
+
+  .finale-bg img,
+  .finale-bg video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 75%;
+  }
+
+  .finale-bg video {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .finale-bg.playing video { opacity: 1; }
+
+  .finale::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(20,14,10,0.6);
+    pointer-events: none;
+  }
+
   .finale-inner {
+    position: relative;
+    z-index: 1;
     max-width: 640px;
   }
+
+  .js .finale-bg {
+    scale: 1.08;
+    transition: scale 7s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+
+  .js .finale.is-visible .finale-bg { scale: 1; }
+
+  .finale blockquote .w {
+    display: inline-block;
+  }
+
+  .js .finale blockquote .w {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(10px);
+    transition: opacity 0.8s ease, filter 0.8s ease, transform 0.8s ease;
+    transition-delay: calc(var(--i) * 90ms);
+  }
+
+  .js .finale.is-visible blockquote .w {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+
+  .js .finale cite {
+    opacity: 0;
+    transition: opacity 1s ease;
+    transition-delay: var(--cite-delay, 1.5s);
+  }
+
+  .js .finale.is-visible cite { opacity: 1; }
 
   .finale blockquote {
     margin: 0;
@@ -481,7 +883,7 @@
     }
 
     .about-grid, .about-photo, .project-card, .project-icon, .edu-card, .quote-card,
-    .collage, .collage img, .fact-chip, .timeline-h, .t-item {
+    .collage, .collage img, .fact-card, .timeline-h, .t-item {
       break-inside: avoid;
       page-break-inside: avoid;
     }
@@ -489,6 +891,46 @@
     .project-grid, .edu-grid, .quote-grid {
       break-inside: avoid;
       page-break-inside: avoid;
+    }
+
+    /* В печати — всё в финальном состоянии, без видео и анимаций */
+    .hero-bg, .finale-bg, .hero-inner,
+    .hero h1, .hero h1 .char, .hero .eyebrow, .hero .subtitle,
+    .finale blockquote .w, .finale cite,
+    .tab-panel, .tab-panel * {
+      opacity: 1 !important;
+      filter: none !important;
+      transform: none !important;
+      translate: none !important;
+      scale: none !important;
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .live-photo video, .finale-bg video, .live-badge, .tab-indicator, .fact-front {
+      display: none !important;
+    }
+
+    .lang-switch { display: none !important; }
+
+    /* Отзывы — оригинал и под ним перевод */
+    .quote-text p { grid-area: auto !important; }
+    .q-ru { margin-top: 8px !important; font-size: 0.88rem; color: var(--text-muted) !important; }
+
+    /* Факты печатаются оборотом — полным текстом */
+    .fact-inner { min-height: 0 !important; }
+    .fact-back { box-shadow: none !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-delay: 0s !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
     }
   }
 
@@ -503,6 +945,11 @@
     .hero { min-height: 64vh; }
 
     .collage { grid-template-columns: repeat(2, 1fr); }
+    .fact-cards { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .fact-inner { min-height: 150px; }
+    .fact-front { font-size: 1rem; }
+    .fact-back { font-size: 0.86rem; padding: 14px 12px; }
+    .stats { grid-template-columns: repeat(2, 1fr); gap: 14px 16px; }
 
     .tabs { padding: 12px 16px; gap: 8px; }
     .tab-btn { padding: 8px 14px; font-size: 0.82rem; }
@@ -514,6 +961,7 @@
 <body>
 
   <header class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-inner">
       <div class="eyebrow">Персона</div>
       <h1>Наталья Кукурузина</h1>
@@ -542,7 +990,12 @@
 
           <p>Дома у нас настоящий живой уголок: любимая всеми собака, которая умудряется перехитрить нас всех, муравьиная колония, когда-то жили тараканы и хамелеон, менявший цвет прямо на глазах. В общем, в нашем доме вечно что-то цветёт, ползает или требует прогулки.</p>
         </div>
-        <img class="about-photo" src="images/IMG_2922.jpg" alt="Наталья с семьёй" style="object-position: center 40%;">
+        <div class="live-photo about-live">
+          <img class="about-photo" src="images/IMG_2922.jpg" alt="Наталья с семьёй" style="object-position: center 40%;">
+          <video muted playsinline preload="none" style="object-position: center 40%;" aria-hidden="true">
+            <source src="videos/IMG_2922.mov" type="video/mp4">
+          </video>
+        </div>
       </div>
     </div>
   </section>
@@ -551,15 +1004,39 @@
     <div class="container">
       <h2 class="section-title"><span class="accent-dot"></span>Факты обо мне</h2>
 
-      <div class="fact-chips">
-        <span class="fact-chip"><strong>Кофе</strong> — обязательная часть утра, без вариантов</span>
-        <span class="fact-chip">Из <strong>бизнес-аналитика</strong> доросла до CEO трёх компаний</span>
-        <span class="fact-chip">На <strong>велосипеде</strong> — летом, по делу и для души</span>
-        <span class="fact-chip">Люблю <strong>знакомиться с новыми людьми</strong> — чем неожиданнее встреча, тем лучше</span>
-        <span class="fact-chip">Неровно дышу к <strong>ретроавтомобилям</strong>, особенно ярко-красным</span>
-        <span class="fact-chip"><strong>MBA</strong> получила просто потому, что было интересно</span>
-        <span class="fact-chip">Музей выигрывает у дивана <strong>всегда</strong></span>
-        <span class="fact-chip">Главный проект жизни — <strong>семья</strong>: муж, два сына и дочка</span>
+      <div class="fact-cards">
+        <div class="fact-card" tabindex="0"><div class="fact-inner">
+          <div class="fact-front" aria-hidden="true">Кофе</div>
+          <div class="fact-back"><span><strong>Кофе</strong> — обязательная часть утра, без вариантов</span></div>
+        </div></div>
+        <div class="fact-card" tabindex="0"><div class="fact-inner">
+          <div class="fact-front" aria-hidden="true">От аналитика до CEO</div>
+          <div class="fact-back"><span>Из <strong>бизнес-аналитика</strong> доросла до CEO трёх компаний</span></div>
+        </div></div>
+        <div class="fact-card" tabindex="0"><div class="fact-inner">
+          <div class="fact-front" aria-hidden="true">Велосипед</div>
+          <div class="fact-back"><span>На <strong>велосипеде</strong> — летом, по делу и для души</span></div>
+        </div></div>
+        <div class="fact-card" tabindex="0"><div class="fact-inner">
+          <div class="fact-front" aria-hidden="true">Новые люди</div>
+          <div class="fact-back"><span>Люблю <strong>знакомиться с новыми людьми</strong> — чем неожиданнее встреча, тем лучше</span></div>
+        </div></div>
+        <div class="fact-card" tabindex="0"><div class="fact-inner">
+          <div class="fact-front" aria-hidden="true">Красные ретро</div>
+          <div class="fact-back"><span>Неровно дышу к <strong>ретроавтомобилям</strong>, особенно ярко-красным</span></div>
+        </div></div>
+        <div class="fact-card" tabindex="0"><div class="fact-inner">
+          <div class="fact-front" aria-hidden="true">MBA из интереса</div>
+          <div class="fact-back"><span><strong>MBA</strong> получила просто потому, что было интересно</span></div>
+        </div></div>
+        <div class="fact-card" tabindex="0"><div class="fact-inner">
+          <div class="fact-front" aria-hidden="true">Музей или диван?</div>
+          <div class="fact-back"><span>Музей выигрывает у дивана <strong>всегда</strong></span></div>
+        </div></div>
+        <div class="fact-card" tabindex="0"><div class="fact-inner">
+          <div class="fact-front" aria-hidden="true">Главный проект</div>
+          <div class="fact-back"><span>Главный проект жизни — <strong>семья</strong>: муж, два сына и дочка</span></div>
+        </div></div>
       </div>
     </div>
   </section>
@@ -629,6 +1106,12 @@
 
       <div class="career-resources">
         <h3>С чем работаю</h3>
+        <div class="stats">
+          <div class="stat"><span class="stat-num" data-count="15" data-suffix="+">15+</span><span class="stat-label">лет в e-commerce и SaaS</span></div>
+          <div class="stat"><span class="stat-num" data-count="3">3</span><span class="stat-label">компании, где я была CEO</span></div>
+          <div class="stat"><span class="stat-num" data-count="50" data-suffix="+">50+</span><span class="stat-label">человек в самой большой команде</span></div>
+          <div class="stat"><span class="stat-num" data-count="30" data-suffix="+">30+</span><span class="stat-label">карт и сервисов отзывов в RocketData</span></div>
+        </div>
         <p>MBA, 15+ лет в e-commerce и SaaS, опыт CEO, CMO и Head of Growth, команды от 5 до 50+ человек, рынки от Беларуси до США. Но главный ресурс — умение быстро разобраться в новой индустрии и выстроить в ней рабочую стратегию.</p>
       </div>
     </div>
@@ -665,29 +1148,45 @@
     <div class="container">
       <h2 class="section-title"><span class="accent-dot"></span>Что говорят коллеги</h2>
       <p class="lede">Несколько строк из рекомендаций, которые накопились за годы совместной работы.</p>
+      <div class="lang-switch" role="group" aria-label="Язык отзывов">
+        <button class="lang-btn active" type="button" aria-pressed="true" data-lang="en">Оригинал</button>
+        <button class="lang-btn" type="button" aria-pressed="false" data-lang="ru">По-русски</button>
+      </div>
 
       <div class="quote-grid">
         <div class="quote-card">
           <span class="mark">&ldquo;</span>
-          <p>Natallia is one of the most delightful people I had the pleasure of working for in my career. Her humor and empathy fostered a comforting work environment.</p>
+          <div class="quote-text">
+            <p class="q-en" lang="en">Natallia is one of the most delightful people I had the pleasure of working for in my career. Her humor and empathy fostered a comforting work environment.</p>
+            <p class="q-ru" aria-hidden="true">Наталья — один из самых чудесных людей, с которыми мне довелось работать за всю карьеру. Её юмор и эмпатия создавали атмосферу, в которой было по-настоящему уютно работать.</p>
+          </div>
           <div class="author">Drew Shumski</div>
           <div class="role">Software Architect, подчинялся Наталье напрямую</div>
         </div>
         <div class="quote-card">
           <span class="mark">&ldquo;</span>
-          <p>Under Natalia's leadership aheadWorks became one of the best Magento partners. Natalia's business and people skills made her an ideal leader or business partner.</p>
+          <div class="quote-text">
+            <p class="q-en" lang="en">Under Natalia's leadership aheadWorks became one of the best Magento partners. Natalia's business and people skills made her an ideal leader or business partner.</p>
+            <p class="q-ru" aria-hidden="true">Под руководством Натальи aheadWorks стала одним из лучших партнёров Magento. Деловая хватка и умение работать с людьми делают её идеальным руководителем и бизнес-партнёром.</p>
+          </div>
           <div class="author">Victor Chuntu</div>
           <div class="role">Staff Technical Program Manager, Realtor.com</div>
         </div>
         <div class="quote-card">
           <span class="mark">&ldquo;</span>
-          <p>Natallia has not only sharp strategic vision, but also patience, dedication and close attention to details. I am sure that she will go far in life.</p>
+          <div class="quote-text">
+            <p class="q-en" lang="en">Natallia has not only sharp strategic vision, but also patience, dedication and close attention to details. I am sure that she will go far in life.</p>
+            <p class="q-ru" aria-hidden="true">У Натальи не только острое стратегическое видение, но и терпение, преданность делу и внимание к деталям. Уверен, она многого добьётся в жизни.</p>
+          </div>
           <div class="author">Arvid Vismont</div>
           <div class="role">Entrepreneur and Startups advisor, подчинялся Наталье напрямую</div>
         </div>
         <div class="quote-card">
           <span class="mark">&ldquo;</span>
-          <p>She ran it with structure and discipline that I would expect from a seasoned executive.</p>
+          <div class="quote-text">
+            <p class="q-en" lang="en">She ran it with structure and discipline that I would expect from a seasoned executive.</p>
+            <p class="q-ru" aria-hidden="true">Она вела всё с той структурой и дисциплиной, какую я ожидал бы от опытного топ-менеджера.</p>
+          </div>
           <div class="author">Ravi Mittal</div>
           <div class="role">President, Rave Digital · CEO, Aheadworks</div>
         </div>
@@ -703,7 +1202,12 @@
       <div class="collage">
         <img src="images/IMG_6333.jpg" alt="С сыновьями у горы Фудзи" style="object-position: center 25%;">
         <img src="images/IMG_0654.jpg" alt="В музее всей семьёй">
-        <img src="images/IMG_2294.JPG" alt="Велопрогулка у озера" style="object-position: center 20%;">
+        <div class="live-photo">
+          <img src="images/IMG_2294.JPG" alt="Велопрогулка у озера" style="object-position: center 20%;">
+          <video muted playsinline preload="none" style="object-position: center 20%;" aria-hidden="true">
+            <source src="videos/IMG_2294.MP4" type="video/mp4">
+          </video>
+        </div>
         <img src="images/IMG_3994.jpg" alt="На выставке ретроавтомобилей">
         <img src="images/DSC_9719.jpg" alt="Наш пёс" style="object-position: center 25%;">
         <img src="images/IMG_2089.JPG" alt="С дочкой на Рождество" style="object-position: center 15%;">
@@ -712,6 +1216,12 @@
   </section>
 
   <section class="finale" style="border-top: none; padding: 0;">
+    <div class="finale-bg" aria-hidden="true">
+      <img src="images/IMG_3152.JPG" alt="">
+      <video muted playsinline preload="none">
+        <source src="videos/IMG_3152.MP4" type="video/mp4">
+      </video>
+    </div>
     <div class="finale-inner">
       <blockquote>
         «Сильный бизнес строят цифры и стратегия. Крепкую жизнь — семья, которая рядом, что бы ни происходило».
@@ -732,6 +1242,105 @@
   </footer>
 
   <script>
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var canHover = window.matchMedia('(hover: hover)').matches;
+
+    function onceVisible(el, threshold, callback) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            observer.disconnect();
+            callback();
+          }
+        });
+      }, { threshold: threshold });
+      observer.observe(el);
+    }
+
+    function playVideo(video) {
+      video.currentTime = 0;
+      var promise = video.play();
+      if (promise) promise.catch(function () {});
+    }
+
+    /* ---------- HERO: имя по буквам и параллакс ---------- */
+    var hero = document.querySelector('.hero');
+    var heroBg = document.querySelector('.hero-bg');
+    var heroInner = document.querySelector('.hero-inner');
+    var heroTitle = document.querySelector('.hero h1');
+    var titleText = heroTitle.textContent;
+    var charIndex = 0;
+
+    heroTitle.setAttribute('aria-label', titleText);
+    heroTitle.textContent = '';
+    titleText.split(' ').forEach(function (word, wordIndex) {
+      if (wordIndex) heroTitle.appendChild(document.createTextNode(' '));
+      var wordEl = document.createElement('span');
+      wordEl.className = 'word';
+      wordEl.setAttribute('aria-hidden', 'true');
+      Array.from(word).forEach(function (letter) {
+        var charEl = document.createElement('span');
+        charEl.className = 'char';
+        charEl.textContent = letter;
+        charEl.style.setProperty('--i', charIndex++);
+        wordEl.appendChild(charEl);
+      });
+      heroTitle.appendChild(wordEl);
+    });
+    heroTitle.classList.add('split');
+
+    if (!reduceMotion) {
+      var scrollTicking = false;
+      window.addEventListener('scroll', function () {
+        if (scrollTicking) return;
+        scrollTicking = true;
+        requestAnimationFrame(function () {
+          scrollTicking = false;
+          var y = window.scrollY;
+          var heroHeight = hero.offsetHeight;
+          if (y > heroHeight) return;
+          heroBg.style.translate = '0 ' + (y * 0.35) + 'px';
+          heroInner.style.opacity = 1 - Math.min(y / (heroHeight * 0.7), 1);
+          heroInner.style.translate = '0 ' + (y * 0.15) + 'px';
+        });
+      }, { passive: true });
+    }
+
+    /* ---------- ВКЛАДКИ ---------- */
+    /* Скользящая «таблетка» под активной кнопкой; возвращает функцию пересчёта положения */
+    function createIndicator(container) {
+      var indicator = document.createElement('span');
+      indicator.className = 'tab-indicator';
+      indicator.setAttribute('aria-hidden', 'true');
+      container.insertBefore(indicator, container.firstChild);
+
+      function move() {
+        var active = container.querySelector('.active');
+        if (!active || !active.offsetWidth) return; // контейнер ещё скрыт во вкладке
+        indicator.style.width = active.offsetWidth + 'px';
+        indicator.style.height = active.offsetHeight + 'px';
+        indicator.style.transform = 'translate(' + active.offsetLeft + 'px, ' + active.offsetTop + 'px)';
+        if (!indicator.classList.contains('ready')) {
+          requestAnimationFrame(function () { indicator.classList.add('ready'); });
+        }
+      }
+
+      move();
+      window.addEventListener('resize', move);
+      return move;
+    }
+
+    var tabs = document.querySelector('.tabs');
+    var moveIndicator = createIndicator(tabs);
+    var langSwitch = document.querySelector('.lang-switch');
+    var moveLangIndicator = createIndicator(langSwitch);
+
+    document.querySelectorAll('.fact-cards, .project-grid, .edu-grid, .quote-grid, .collage').forEach(function (grid) {
+      Array.from(grid.children).forEach(function (child, i) {
+        child.style.setProperty('--i', i);
+      });
+    });
+
     document.querySelectorAll('.tab-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var target = btn.dataset.tab;
@@ -747,10 +1356,185 @@
         btn.classList.add('active');
         btn.setAttribute('aria-selected', 'true');
         document.getElementById(target).classList.add('active');
+        moveIndicator();
+        moveLangIndicator();
 
-        document.querySelector('.tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        tabs.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
       });
     });
+
+    /* ---------- ОТЗЫВЫ: оригинал / перевод ---------- */
+    var testimonials = document.getElementById('testimonials');
+
+    langSwitch.querySelectorAll('.lang-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var isRu = btn.dataset.lang === 'ru';
+
+        langSwitch.querySelectorAll('.lang-btn').forEach(function (b) {
+          b.classList.toggle('active', b === btn);
+          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        });
+        testimonials.classList.toggle('lang-ru', isRu);
+        testimonials.querySelectorAll('.q-en').forEach(function (p) { p.setAttribute('aria-hidden', isRu ? 'true' : 'false'); });
+        testimonials.querySelectorAll('.q-ru').forEach(function (p) { p.setAttribute('aria-hidden', isRu ? 'false' : 'true'); });
+        moveLangIndicator();
+      });
+    });
+
+    /* ---------- КАРЬЕРА: 3D-наклон и блик за курсором ---------- */
+    if (canHover && !reduceMotion) {
+      document.querySelectorAll('.project-card').forEach(function (card) {
+        var frame = null;
+
+        card.addEventListener('mousemove', function (event) {
+          if (frame) return;
+          frame = requestAnimationFrame(function () {
+            frame = null;
+            var rect = card.getBoundingClientRect();
+            var x = (event.clientX - rect.left) / rect.width;
+            var y = (event.clientY - rect.top) / rect.height;
+            card.classList.add('tilting');
+            card.style.setProperty('--ry', ((x - 0.5) * 12) + 'deg');
+            card.style.setProperty('--rx', ((0.5 - y) * 12) + 'deg');
+            card.style.setProperty('--mx', (x * 100) + '%');
+            card.style.setProperty('--my', (y * 100) + '%');
+          });
+        });
+
+        card.addEventListener('mouseleave', function () {
+          if (frame) cancelAnimationFrame(frame);
+          frame = null;
+          card.classList.remove('tilting');
+          card.style.setProperty('--rx', '0deg');
+          card.style.setProperty('--ry', '0deg');
+        });
+      });
+    }
+
+    /* ---------- ЖИВЫЕ ФОТО ---------- */
+    var liveIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">' +
+      '<circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>' +
+      '<circle cx="12" cy="12" r="6.5"/>' +
+      '<circle cx="12" cy="12" r="10" stroke-dasharray="1.5 2.2"/></svg>';
+
+    document.querySelectorAll('.live-photo').forEach(function (photo) {
+      var video = photo.querySelector('video');
+      var badge = document.createElement('span');
+      badge.className = 'live-badge';
+      badge.innerHTML = liveIcon + 'LIVE';
+      photo.appendChild(badge);
+
+      function play() {
+        video.preload = 'auto';
+        photo.classList.add('playing');
+        playVideo(video);
+      }
+
+      function stop() {
+        photo.classList.remove('playing');
+      }
+
+      video.addEventListener('ended', stop);
+      photo.addEventListener('click', play);
+
+      if (canHover) {
+        photo.addEventListener('mouseenter', play);
+        photo.addEventListener('mouseleave', stop);
+      } else if (!reduceMotion) {
+        onceVisible(photo, 0.6, play);
+      }
+    });
+
+    /* ---------- ФИНАЛ: цитата по словам ---------- */
+    var finale = document.querySelector('.finale');
+    var finaleBg = finale.querySelector('.finale-bg');
+    var finaleVideo = finaleBg.querySelector('video');
+    var quote = finale.querySelector('blockquote');
+    var wordIndex = 0;
+
+    Array.from(quote.childNodes).forEach(function (node) {
+      if (node.nodeType !== Node.TEXT_NODE || !node.textContent.trim()) return;
+      var fragment = document.createDocumentFragment();
+      node.textContent.trim().split(/\s+/).forEach(function (word, i) {
+        if (i) fragment.appendChild(document.createTextNode(' '));
+        var wordEl = document.createElement('span');
+        wordEl.className = 'w';
+        wordEl.textContent = word;
+        wordEl.style.setProperty('--i', wordIndex++);
+        fragment.appendChild(wordEl);
+      });
+      quote.replaceChild(fragment, node);
+    });
+    finale.style.setProperty('--cite-delay', (wordIndex * 90 + 400) + 'ms');
+
+    onceVisible(finale, 0.45, function () {
+      finale.classList.add('is-visible');
+    });
+
+    /* Фото в финале оживает снова каждые 5–10 секунд, пока финал на экране */
+    var finaleTimer = null;
+    var finaleInView = false;
+
+    function playFinale() {
+      finaleVideo.preload = 'auto';
+      finaleBg.classList.add('playing');
+      playVideo(finaleVideo);
+    }
+
+    finaleVideo.addEventListener('ended', function () {
+      finaleBg.classList.remove('playing');
+      if (finaleInView && !reduceMotion) {
+        clearTimeout(finaleTimer);
+        finaleTimer = setTimeout(playFinale, 5000 + Math.random() * 5000);
+      }
+    });
+
+    if (!reduceMotion) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          finaleInView = entry.isIntersecting;
+          if (finaleInView) {
+            if (finaleVideo.paused) playFinale();
+          } else {
+            clearTimeout(finaleTimer);
+            finaleVideo.pause();
+            finaleBg.classList.remove('playing');
+          }
+        });
+      }, { threshold: 0.45 }).observe(finale);
+    }
+
+    /* ---------- ФАКТЫ: карточки-перевёртыши ---------- */
+    /* Наведение и фокус с клавиатуры переворачивают через CSS, на тач-экранах — тап */
+    if (!canHover) {
+      document.querySelectorAll('.fact-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+          card.classList.toggle('flipped');
+        });
+      });
+    }
+
+    /* ---------- СЧЁТЧИКИ ---------- */
+    var stats = document.querySelector('.stats');
+
+    if (!reduceMotion) {
+      onceVisible(stats, 0.5, function () {
+        var numbers = stats.querySelectorAll('.stat-num');
+        var duration = 1400;
+        var start = performance.now();
+
+        function tick(now) {
+          var progress = Math.min((now - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          numbers.forEach(function (el) {
+            el.textContent = Math.round(el.dataset.count * eased) + (el.dataset.suffix || '');
+          });
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+
+        requestAnimationFrame(tick);
+      });
+    }
   </script>
 
 </body>
