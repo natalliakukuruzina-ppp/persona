@@ -120,6 +120,51 @@
     margin-bottom: 36px;
   }
 
+  /* ---------- TABS ---------- */
+  .tabs {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 24px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .tab-btn {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+
+  .tab-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent-dark);
+  }
+
+  .tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .tab-panel {
+    display: none;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
   /* ---------- ABOUT ---------- */
   .about-grid {
     display: grid;
@@ -182,6 +227,33 @@
     font-size: 0.95rem;
     color: var(--text-muted);
     margin-bottom: 0;
+  }
+
+  .project-card .card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .project-card .card-head h3 {
+    margin-bottom: 0;
+  }
+
+  .project-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent-tint);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .project-icon svg {
+    width: 22px;
+    height: 22px;
   }
 
   .career-resources {
@@ -350,6 +422,36 @@
     color: #f0c9b8;
   }
 
+  /* ---------- CONTACTS ---------- */
+  .contacts {
+    text-align: center;
+    padding: 56px 24px;
+  }
+
+  .contacts p {
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  .contact-link {
+    display: inline-block;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 11px 24px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.92rem;
+    color: var(--accent-dark);
+    text-decoration: none;
+    box-shadow: 0 2px 10px rgba(60,30,15,0.04);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .contact-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
   /* ---------- FOOTER ---------- */
   footer {
     padding: 24px 24px 36px;
@@ -365,12 +467,20 @@
 
   /* ---------- PRINT / PDF ---------- */
   @media print {
+    .tabs {
+      display: none;
+    }
+
+    .tab-panel {
+      display: block !important;
+    }
+
     section, header.hero, .finale {
       break-inside: avoid;
       page-break-inside: avoid;
     }
 
-    .about-grid, .about-photo, .project-card, .edu-card, .quote-card,
+    .about-grid, .about-photo, .project-card, .project-icon, .edu-card, .quote-card,
     .collage, .collage img, .fact-chip, .timeline-h, .t-item {
       break-inside: avoid;
       page-break-inside: avoid;
@@ -393,6 +503,11 @@
     .hero { min-height: 64vh; }
 
     .collage { grid-template-columns: repeat(2, 1fr); }
+
+    .tabs { padding: 12px 16px; gap: 8px; }
+    .tab-btn { padding: 8px 14px; font-size: 0.82rem; }
+    .project-icon { width: 32px; height: 32px; }
+    .project-icon svg { width: 18px; height: 18px; }
   }
 </style>
 </head>
@@ -406,7 +521,16 @@
     </div>
   </header>
 
-  <section id="about">
+  <nav class="tabs" role="tablist" aria-label="Разделы страницы">
+    <button class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="about" data-tab="about">Обо мне</button>
+    <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="facts" data-tab="facts">Факты</button>
+    <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="career" data-tab="career">Карьера</button>
+    <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="education" data-tab="education">Образование</button>
+    <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="testimonials" data-tab="testimonials">Коллеги говорят</button>
+    <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="life" data-tab="life">Вне работы</button>
+  </nav>
+
+  <section id="about" class="tab-panel active">
     <div class="container">
       <h2 class="section-title"><span class="accent-dot"></span>Про меня</h2>
 
@@ -423,7 +547,7 @@
     </div>
   </section>
 
-  <section id="facts">
+  <section id="facts" class="tab-panel">
     <div class="container">
       <h2 class="section-title"><span class="accent-dot"></span>Факты обо мне</h2>
 
@@ -440,26 +564,65 @@
     </div>
   </section>
 
-  <section id="career">
+  <section id="career" class="tab-panel">
     <div class="container">
       <h2 class="section-title"><span class="accent-dot"></span>Карьерный путь</h2>
       <p class="lede">Пятнадцать с лишним лет и шесть компаний — но суть не меняется: превращать стратегию в результат, а команду — в тех, кто доводит дело до конца.</p>
 
       <div class="project-grid">
         <div class="project-card">
-          <h3>Стратегия роста</h3>
+          <div class="card-head">
+            <span class="project-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-dark)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 18 L8 12 L12 15 L19.5 5.5"/>
+                <path d="M14.5 5 L19.5 5.5 L19 10.5"/>
+              </svg>
+            </span>
+            <h3>Стратегия роста</h3>
+          </div>
           <p>Строю стратегию роста там, где нужно быстро найти рабочую модель: от привлечения пользователей до оптимизации воронки конверсии. Head of Growth в HYPERVSN, Head of E‑commerce Strategy and Growth в Amasty.</p>
         </div>
         <div class="project-card">
-          <h3>Управление и P&amp;L</h3>
+          <div class="card-head">
+            <span class="project-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-dark)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4 L12 18.5"/>
+                <path d="M5 8 L19 6.2"/>
+                <path d="M5 8 L3.3 13 M5 8 L6.8 13.2"/>
+                <path d="M19 6.2 L17.3 12 M19 6.2 L20.8 12.3"/>
+                <path d="M9 19.5 L15.5 19"/>
+              </svg>
+            </span>
+            <h3>Управление и P&amp;L</h3>
+          </div>
           <p>Руковожу компанией целиком — от найма до финансового результата. CEO в ITlect, CIB Software и aheadWorks: три компании, один подход — дисциплина и забота о команде одновременно.</p>
         </div>
         <div class="project-card">
-          <h3>Маркетинг и позиционирование</h3>
+          <div class="card-head">
+            <span class="project-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-dark)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="12.5" r="8"/>
+                <circle cx="11" cy="12.5" r="4.4"/>
+                <circle cx="13.3" cy="10.3" r="1.3" fill="var(--accent-dark)" stroke="none"/>
+              </svg>
+            </span>
+            <h3>Маркетинг и позиционирование</h3>
+          </div>
           <p>Строю бренд и рыночную стратегию: от первых шагов в Oxagile до нынешней роли CMO в RocketData, где отвечаю за то, чтобы бизнес был там, где его ищут клиенты.</p>
         </div>
         <div class="project-card">
-          <h3>Продукт и данные</h3>
+          <div class="card-head">
+            <span class="project-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="5" cy="7" r="2"/>
+                <circle cx="13.5" cy="5.2" r="2"/>
+                <circle cx="19" cy="12.5" r="2"/>
+                <circle cx="9" cy="17.5" r="2"/>
+                <path d="M6.8 6.3 L11.6 5.5 M15.2 6.4 L17.6 10.6 M11.3 7 L8.2 15.5 M13.4 15.3 L17.4 13.6"/>
+              </svg>
+            </span>
+            <h3>Продукт и данные</h3>
+          </div>
           <p>Работаю на стыке продукта и данных: как Product Owner в HYPERVSN запускала 3D-голографическую платформу, сейчас в RocketData управляю данными и отзывами более чем в 30 картографических и репутационных сервисах.</p>
         </div>
       </div>
@@ -471,7 +634,7 @@
     </div>
   </section>
 
-  <section id="education">
+  <section id="education" class="tab-panel">
     <div class="container">
       <h2 class="section-title"><span class="accent-dot"></span>Образование</h2>
 
@@ -498,7 +661,7 @@
     </div>
   </section>
 
-  <section id="testimonials">
+  <section id="testimonials" class="tab-panel">
     <div class="container">
       <h2 class="section-title"><span class="accent-dot"></span>Что говорят коллеги</h2>
       <p class="lede">Несколько строк из рекомендаций, которые накопились за годы совместной работы.</p>
@@ -532,7 +695,7 @@
     </div>
   </section>
 
-  <section id="life">
+  <section id="life" class="tab-panel">
     <div class="container">
       <h2 class="section-title"><span class="accent-dot"></span>Жизнь вне работы</h2>
       <p class="lede">Семья, путешествия, велосипед, ретроавтомобили и один очень хитрый пёс.</p>
@@ -557,9 +720,38 @@
     </div>
   </section>
 
+  <section class="contacts">
+    <div class="container">
+      <p>Если хочется продолжить разговор — буду рада.</p>
+      <a class="contact-link" href="https://www.linkedin.com/in/natallia-kukuruzina-93768211/" target="_blank" rel="noopener">Наталья в LinkedIn ↗</a>
+    </div>
+  </section>
+
   <footer>
     <p>Persona · собрано с любовью</p>
   </footer>
+
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = btn.dataset.tab;
+
+        document.querySelectorAll('.tab-btn').forEach(function (b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        document.querySelectorAll('.tab-panel').forEach(function (panel) {
+          panel.classList.remove('active');
+        });
+
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        document.getElementById(target).classList.add('active');
+
+        document.querySelector('.tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
 
 </body>
 </html>
